@@ -56,7 +56,7 @@ class TestRules(unittest.TestCase):
 
         self.assertFalse(rules.Service_Review(client, appointment))
 
-    def test_OneServiceInTime(self): #один временной слот одной услуги
+    def test_OneServiceInTime(self): #нельзя записаться на две разные услуги в одно время
         service1 = Service(service_id=1, name="Haircut", payment="Cash", cost=20.0)
         service2 = Service(service_id=2, name="Massage", payment="Cash", cost=20.0)
         client = Client(client_id=1, personal_data="John Doe")
@@ -69,7 +69,7 @@ class TestRules(unittest.TestCase):
         self.assertFalse(rules.OneServiceInTime(client, service1, datetime(2024, 3, 25, 10, 0)))
         self.assertTrue(rules.OneServiceInTime(client, service1, datetime(2024, 3, 26, 10, 0)))
 
-    def test_OnlyOneTime(self): #нельзя записаться на две разные услуги в одно время
+    def test_OnlyOneTime(self): #один временной слот одной услуги
         client = Client(client_id=1, personal_data="John Doe")
         service1 = Service(service_id=1, name="Haircut", payment="Cash", cost=20.0)
         appointment1 = Appointment(client=client, service=service1, appointment_time=datetime(2024, 3, 25, 10, 0))

@@ -1,6 +1,12 @@
+import datetime
+
+from client import Client
+from Appointment import Appointment
+from service import Service
 class Rules():
     def __init__(self, rew_rep):
         self.reviews = rew_rep
+        self.app = []
 
     def service_rating(self, master, master_rep): #увольнение мастера
         sum = 0
@@ -41,3 +47,18 @@ class Rules():
             if app.appointment_time == appointment_time:
                 return False
         return True
+
+    def booking(self,client: Client, service: Service, time):
+        flag = True
+        if self.OnlyOneTime(time, client) == False:
+            flag = False
+            return -1
+        if self.OneServiceInTime(client, service, time):
+            flag = False
+            return -1
+
+        if flag:
+            client.appointment.append(Appointment(client, service, datetime.datetime.now()))
+            return 1
+
+

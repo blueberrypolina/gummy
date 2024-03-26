@@ -48,17 +48,13 @@ class Rules():
                 return False
         return True
 
-    def booking(self,client: Client, service: Service, time):
-        flag = True
+    def booking(self, client, service, time):
         if self.OnlyOneTime(time, client) == False:
-            flag = False
             return -1
         if self.OneServiceInTime(client, service, time):
-            flag = False
             return -1
 
-        if flag:
-            client.appointment.append(Appointment(client, service, datetime.datetime.now()))
-            return 1
+        client.appointment.append(Appointment(client, service, datetime.datetime.now()))
+        return 1
 
 

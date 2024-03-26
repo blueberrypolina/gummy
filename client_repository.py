@@ -1,5 +1,5 @@
 class ClientRepository:
-    def init(self):
+    def __init__(self):
         self.clients = []
 
     def save_client(self, client):

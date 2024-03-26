@@ -20,7 +20,7 @@ client_repository.save_client(client1)
 service1 = Service(service_id=1, name="Haircut", payment="Card", cost=30)
 service_repository.save_service(service1)
 
-master1 = Master(master_id=1, rating=4.5, appointment_time="10:00 AM", address="123 Main St")
+master1 = Master(master_id=1, rating=4.5,  address="123 Main St")
 master_repository.save_master(master1)
 
 review1 = Review(review_id=1, text="Great service!", rating=5)

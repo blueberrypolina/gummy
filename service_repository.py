@@ -1,5 +1,5 @@
 class ServiceRepository:
-    def init(self):
+    def __init__(self):
         self.services = []
 
     def save_service(self, service):

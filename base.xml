@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<root>
+  <Client>
+    <instance id="1">
+      <id>1</id>
+      <personal_data>John Doe</personal_data>
+      <appointment>[]</appointment>
+      <masters>[]</masters>
+      <reviews>[]</reviews>
+    </instance>
+    <instance id="2">
+      <id>2</id>
+      <personal_data>Kate Miller</personal_data>
+      <appointment>[]</appointment>
+      <masters>[]</masters>
+      <reviews>[]</reviews>
+    </instance>
+  </Client>
+  <Service>
+    <instance id="1">
+      <id>1</id>
+      <name>Haircut</name>
+      <payment>Card</payment>
+      <cost>30</cost>
+    </instance>
+    <instance id="2">
+      <id>2</id>
+      <name>Manicure</name>
+      <payment>Card</payment>
+      <cost>40</cost>
+    </instance>
+  </Service>
+</root>

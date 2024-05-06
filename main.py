@@ -1,60 +1,46 @@
-# from client import Client
-# from service import Service
-# from master import Master
-# from review import Review
-# from client_repository import ClientRepository
-# from service_repository import ServiceRepository
-# from master_repository import MasterRepository
-# from review_repository import ReviewRepository
-#
-# # Создаем фейковые репозитории
-# client_repository = ClientRepository()
-# service_repository = ServiceRepository()
-# master_repository = MasterRepository()
-# review_repository = ReviewRepository()
-#
-# # Пример использования
-# client1 = Client(client_id=1, personal_data="John Doe")
-# client_repository.save_client(client1)
-#
-# service1 = Service(service_id=1, name="Haircut", payment="Card", cost=30)
-# service_repository.save_service(service1)
-#
-# master1 = Master(master_id=1, rating=4.5,  address="123 Main St")
-# master_repository.save_master(master1)
-#
-# review1 = Review(review_id=1, text="Great service!", rating=5)
-# client1.reviews.append(review1)
-# review_repository.save_review(review1)
-#
-# # Пример получения данных из репозиториев
-# retrieved_client = client_repository.find_client_by_id(1)
-# retrieved_service = service_repository.find_service_by_id(1)
-# retrieved_master = master_repository.find_master_by_id(1)
-# retrieved_review = review_repository.find_review_by_id(1)
-#
-# # Выводим информацию
-# print(f"Client: {retrieved_client.personal_data}")
-# print(f"Service: {retrieved_service.name}, Cost: {retrieved_service.cost}")
-# print(f"Master: Rating: {retrieved_master.rating}, Time: {retrieved_master.appointment_time}, Address: {retrieved_master.address}")
-# print(f"Review: {retrieved_review.text}, Rating: {retrieved_review.rating}")
-
 from xmlReposirory import XMLRepository
 from client import Client
 from service import Service
+from Rules import Rules
+import datetime
+
+
 def save_to_xml(user_data):
     repository = XMLRepository("base.xml")
     repository.save(user_data)
 
+
+def deleteVacs(id):
+    rep = XMLRepository("base.xml")
+    rep.deletevacancy_instance(id)
+
+
+def find_users_by_name(name):
+    user_repository = XMLRepository("base.xml")
+    users = user_repository.findClient(name)
+    return users
+
+
+def find_vacs_by_name(name):
+    vacs_repository = XMLRepository("base.xml")
+    vacs = vacs_repository.findService(name)
+    return vacs
+
+
+def UseBooking(user_name, service_name):
+    users = find_users_by_name(user_name)
+    services = find_vacs_by_name(service_name)
+    client = Client(client_id=users[0]["id"], personal_data=users[0]["personal_data"])
+    date = datetime.date(2024, 5, 7)
+    service = Service(id=services[0]["id"], name=services[0]["name"], payment=services[0]["payment"],
+                      cost=services[0]["cost"])
+    rules = Rules()
+    a = rules.booking(client=client, service=service, date=date)
+    deleteVacs(client.id)
+    save_to_xml(client)
+    return a
+
+
 if __name__ == "__main__":
-
-    client1 = Client(client_id=1, personal_data="John Doe")
-    client2 = Client(client_id=2, personal_data="Kate Miller")
-
-    service1 = Service(id=1, name="Haircut", payment="Card", cost=30)
-    service2 = Service(id=2, name="Manicure", payment="Card", cost=40)
-
-    save_to_xml(client1)
-    save_to_xml(client2)
-    save_to_xml(service1)
-    save_to_xml(service2)
+    b = UseBooking("John Doe", "Haircut")
+    print(b)

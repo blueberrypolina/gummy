@@ -1,17 +1,17 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <root>
   <Client>
-    <instance id="1">
-      <id>1</id>
-      <personal_data>John Doe</personal_data>
-      <appointment>[]</appointment>
-      <masters>[]</masters>
-      <reviews>[]</reviews>
-    </instance>
     <instance id="2">
       <id>2</id>
       <personal_data>Kate Miller</personal_data>
       <appointment>[]</appointment>
+      <masters>[]</masters>
+      <reviews>[]</reviews>
+    </instance>
+    <instance id="1">
+      <id>1</id>
+      <personal_data>John Doe</personal_data>
+      <appointment>[Appointment(client=&lt;client.Client object at 0x000001A9FB047070&gt;, service=Service(id='1', name='Haircut', payment='Card', cost='30'), appointment_time=datetime.datetime(2024, 5, 6, 19, 16, 9, 582533))]</appointment>
       <masters>[]</masters>
       <reviews>[]</reviews>
     </instance>

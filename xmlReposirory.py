@@ -57,5 +57,64 @@ class XMLRepository(BaseRepository):
         tree = ET.parse(xml, parser)
         tree.write(xml, encoding='utf-8', pretty_print=True, xml_declaration=True)
 
-    def find(self, **kwargs):
+    def findClient(self, name):
+        root, _ = self.create_or_open_xml()
+        users = []
+
+        # Находим директорию User
+        user_dir = root.find("Client")
+        if user_dir is not None:
+            # Проходимся по всем экземплярам (пользователям) в директории User
+            for instance_dir in user_dir:
+                # Проверяем атрибут "name" текущего экземпляра (пользователя)
+                for prop_element in instance_dir:
+                    if prop_element.tag == "personal_data" and prop_element.text == name:
+                        user = self.parse_user(instance_dir)
+                        users.append(user)
+
+        return users if users else None
+
+    def parse_user(self, instance_dir):
+        user = {}
+        # Проходимся по атрибутам текущего экземпляра (пользователя)
+        for prop_element in instance_dir:
+            user[prop_element.tag] = prop_element.text
+        return user
+
+    def findService(self, name):
+        root, _ = self.create_or_open_xml()
+        users = []
+
+        # Находим директорию User
+        user_dir = root.find("Service")
+        if user_dir is not None:
+            # Проходимся по всем экземплярам (пользователям) в директории User
+            for instance_dir in user_dir:
+                # Проверяем атрибут "name" текущего экземпляра (пользователя)
+                for prop_element in instance_dir:
+                    if prop_element.tag == "name" and prop_element.text == name:
+                        user = self.parse_user(instance_dir)
+                        users.append(user)
+
+        return users if users else None
+
+    def deletevacancy_instance(self, instance_id):
+        root,_ = self.create_or_open_xml()
+
+        # Находим директорию Vacancy
+        vacancy_dir = root.find("Client")
+        if vacancy_dir is not None:
+            # Ищем экземпляр Vacancy с заданным id
+            instance_to_delete = vacancy_dir.find(f"instance[@id='{instance_id}']")
+            if instance_to_delete is not None:
+                # Удаляем найденный экземпляр из директории Vacancy
+                vacancy_dir.remove(instance_to_delete)
+
+                # Перезаписываем XML-файл с обновленными данными
+                with open(self.file_path, 'wb') as f:
+                    self.tree.write(f, xml_declaration=True, encoding='utf-8', pretty_print=True)
+                return True  # Успешно удалено
+        return False  # Экземпляр с заданным id не найден
+
+    def find(self, query):
         pass

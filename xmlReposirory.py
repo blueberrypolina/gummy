@@ -59,56 +59,56 @@ class XMLRepository(BaseRepository):
 
     def findClient(self, name):
         root, _ = self.create_or_open_xml()
-        users = []
+        clients = []
 
-        # Находим директорию User
-        user_dir = root.find("Client")
-        if user_dir is not None:
-            # Проходимся по всем экземплярам (пользователям) в директории User
-            for instance_dir in user_dir:
-                # Проверяем атрибут "name" текущего экземпляра (пользователя)
+        # Находим директорию Client
+        client_dir = root.find("Client")
+        if client_dir is not None:
+            # Проходимся по всем экземплярам в директории Client
+            for instance_dir in client_dir:
+                # Проверяем атрибут "name" текущего экземпляра
                 for prop_element in instance_dir:
                     if prop_element.tag == "personal_data" and prop_element.text == name:
-                        user = self.parse_user(instance_dir)
-                        users.append(user)
+                        client = self.parse_client(instance_dir)
+                        clients.append(client)
 
-        return users if users else None
+        return clients if clients else None
 
-    def parse_user(self, instance_dir):
-        user = {}
-        # Проходимся по атрибутам текущего экземпляра (пользователя)
+    def parse_client(self, instance_dir):
+        client = {}
+        # Проходимся по атрибутам текущего экземпляра
         for prop_element in instance_dir:
-            user[prop_element.tag] = prop_element.text
-        return user
+            client[prop_element.tag] = prop_element.text
+        return client
 
     def findService(self, name):
         root, _ = self.create_or_open_xml()
-        users = []
+        clients = []
 
-        # Находим директорию User
-        user_dir = root.find("Service")
-        if user_dir is not None:
-            # Проходимся по всем экземплярам (пользователям) в директории User
-            for instance_dir in user_dir:
-                # Проверяем атрибут "name" текущего экземпляра (пользователя)
+        # Находим директорию Client
+        client_dir = root.find("Service")
+        if client_dir is not None:
+            # Проходимся по всем экземплярам в директории Client
+            for instance_dir in client_dir:
+                # Проверяем атрибут "name" текущего экземпляра
                 for prop_element in instance_dir:
                     if prop_element.tag == "name" and prop_element.text == name:
-                        user = self.parse_user(instance_dir)
-                        users.append(user)
+                        client = self.parse_client(instance_dir)
+                        clients.append(client)
 
-        return users if users else None
+        return clients if clients else None
 
-    def deletevacancy_instance(self, instance_id):
+    def deleteservice_instance(self, instance_id):
         root,_ = self.create_or_open_xml()
 
-        # Находим директорию Vacancy
-        vacancy_dir = root.find("Client")
-        if vacancy_dir is not None:
-            # Ищем экземпляр Vacancy с заданным id
-            instance_to_delete = vacancy_dir.find(f"instance[@id='{instance_id}']")
+        # Находим директорию Service
+        service_dir = root.find("Client")
+        if service_dir is not None:
+            # Ищем экземпляр Service с заданным id
+            instance_to_delete = service_dir.find(f"instance[@id='{instance_id}']")
             if instance_to_delete is not None:
-                # Удаляем найденный экземпляр из директории Vacancy
-                vacancy_dir.remove(instance_to_delete)
+                # Удаляем найденный экземпляр из директории Service
+                service_dir.remove(instance_to_delete)
 
                 # Перезаписываем XML-файл с обновленными данными
                 with open(self.file_path, 'wb') as f:

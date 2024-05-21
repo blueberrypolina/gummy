@@ -1,46 +1,52 @@
-from xmlReposirory import XMLRepository
+from JSONRepository import JsonRepository
 from client import Client
+from master import Master
+from review import Review
 from service import Service
+from Appointment import Appointment
 from Rules import Rules
 import datetime
 
-
-def save_to_xml(client_data):
-    repository = XMLRepository("base.xml")
-    repository.save(client_data)
+repository = JsonRepository('data')  # директория, куда будут сохраняться файлы
 
 
-def deleteService(id):
-    rep = XMLRepository("base.xml")
-    rep.deleteservice_instance(id)
+def find_client_by_name(name):
+    def query(obj):
+        if isinstance(obj, Client):
+            return obj.personal_data == name
+        return False
 
-
-def find_clients_by_name(name):
-    client_repository = XMLRepository("base.xml")
-    clients = client_repository.findClient(name)
-    return clients
+    return query
 
 
 def find_service_by_name(name):
-    service_repository = XMLRepository("base.xml")
-    service = service_repository.findService(name)
-    return service
+    def query(obj):
+        if isinstance(obj, Service):
+            return obj.name == name
+        return False
+
+    return query
 
 
-def UseBooking(client_name, service_name):
-    users = find_clients_by_name(client_name)
-    services = find_service_by_name(service_name)
-    client = Client(client_id=users[0]["id"], personal_data=users[0]["personal_data"])
-    date = datetime.date(2024, 5, 7)
-    service = Service(id=services[0]["id"], name=services[0]["name"], payment=services[0]["payment"],
-                      cost=services[0]["cost"])
-    rules = Rules()
-    a = rules.booking(client=client, service=service, date=date)
-    deleteService(client.id)
-    save_to_xml(client)
-    return a
+# Создание объектов
+client = Client(1, "John Doe")
+client1 = Client(2, "Вова Камушкин")
+master = Master(1, 4, "123 Main St")
+service = Service(1, "Haircut", "Cash", 20.0)
 
+# Сохранение объектов
+repository.save(client)
+repository.save(client1)
+repository.save(master)
+repository.save(service)
+date = datetime.datetime(2024, 5, 7, 10, 0)
+rules = Rules()
 
-if __name__ == "__main__":
-    b = UseBooking("John Doe", "Haircut")
-    print(b)
+if rules.booking(client, service, date) == 1:
+    appointment = Appointment(1, client=client, service=service, appointment_time=date)
+    client.appointment.append(appointment.id)
+    repository.delete_client_by_id(client.id)
+    repository.save(client)
+    print("Всё ок")
+else:
+    print("Что-то не так...")

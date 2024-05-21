@@ -1,6 +1,6 @@
 class Review:
     def __init__(self, review_id, text, rating, master, appointmen):
-        self.review_id = review_id
+        self.id = review_id
         self.text = text
         self.rating = rating
         self.master = master

@@ -52,8 +52,6 @@ class Rules():
             return -1
         if not self.OneServiceInTime(client, service, date):
             return -1
-
-        client.appointment.append(Appointment(client, service, datetime.datetime.now()))
         return 1
 
 

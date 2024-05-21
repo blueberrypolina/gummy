@@ -4,6 +4,6 @@ from datetime import datetime
 
 @dataclass
 class Master:
-    master_id: int
+    id: int
     rating: float
     address: str

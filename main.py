@@ -1,46 +1,56 @@
-from xmlReposirory import XMLRepository
-from client import Client
-from service import Service
-from Rules import Rules
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 import datetime
+from SQLRepository import SQLAlchemyRepository
+
+# Импортируем модели и репозитории из соответствующих модулей
+from sqlConfig import Base, ClientModel, MasterModel, AppointmentModel, ServiceModel
+from Rules import Rules
 
 
-def save_to_xml(client_data):
-    repository = XMLRepository("base.xml")
-    repository.save(client_data)
 
+# Настройка SQLAlchemy
+engine = create_engine('sqlite:///database.db')
+Base.metadata.create_all(engine)
+Session = sessionmaker(bind=engine)
+session = Session()
+sql_rep = SQLAlchemyRepository(session)
 
-def deleteService(id):
-    rep = XMLRepository("base.xml")
-    rep.deleteservice_instance(id)
+# Создание начальных данных
+def create_initial_data(rep:SQLAlchemyRepository):
+    # Создание мастера
+    master = MasterModel(id=1, rating=4.5, address="123 Main St")
+    rep.save(master)
 
+    # Создание клиента
+    client = ClientModel(id=1, personal_data="John Doe")
+    rep.save(client)
 
-def find_clients_by_name(name):
-    client_repository = XMLRepository("base.xml")
-    clients = client_repository.findClient(name)
-    return clients
-
-
-def find_service_by_name(name):
-    service_repository = XMLRepository("base.xml")
-    service = service_repository.findService(name)
-    return service
+    # Создание сервиса
+    service = ServiceModel(id=1, name="Haircut", payment="Cash", cost=20.0)
+    rep.save(service)
 
 
 def UseBooking(client_name, service_name):
-    users = find_clients_by_name(client_name)
-    services = find_service_by_name(service_name)
-    client = Client(client_id=users[0]["id"], personal_data=users[0]["personal_data"])
-    date = datetime.date(2024, 5, 7)
-    service = Service(id=services[0]["id"], name=services[0]["name"], payment=services[0]["payment"],
-                      cost=services[0]["cost"])
-    rules = Rules()
-    a = rules.booking(client=client, service=service, date=date)
-    deleteService(client.id)
-    save_to_xml(client)
-    return a
+    client = sql_rep.find(ClientModel, {"personal_data": client_name})
+    service = sql_rep.find(ServiceModel, {"name": service_name})
+
+    if client and service:
+        rules = Rules(session)
+        date = datetime.datetime(2024, 5, 7, 10, 0)  # Задаем конкретное время для теста
+        result = rules.booking(client, service, date)
+
+        appointment = AppointmentModel(client_id=client.id, service_id=service.id, appointment_time=date)
+        client.appointments.append(appointment)
+        sql_rep.save(appointment)
+        return result
+    return -1
 
 
 if __name__ == "__main__":
-    b = UseBooking("John Doe", "Haircut")
-    print(b)
+    # Создание начальных данных
+    create_initial_data(sql_rep)
+
+    # Вызов метода UseBooking
+    result = UseBooking("John Doe", "Haircut")
+    print("Booking result:", result)
